@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  administration: write
 
 concurrency:
   group: pages
@@ -35,3 +36,12 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Update repository description and URL
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }} \
+            --method PATCH \
+            -f description="Réplica de la homepage de la Universidad Privada de Tacna (UPT) — HTML, CSS y JavaScript" \
+            -f homepage="${{ steps.deployment.outputs.page_url }}"
